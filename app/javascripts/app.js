@@ -54,11 +54,11 @@ window.App = {
 
       accounts = accs;
       account = accounts[0];
-      //  self.broker_list();
-    //   self.totalbroker_list();
+      // self.broker_list();
+      // self.totalbroker_list();
       self.sri();
       self.basicfunctions();
-      // self.user_table();
+      self.user_table();
       self.tokenvalue();  
     //  self.refreshBalance();
     });
@@ -110,7 +110,7 @@ window.App = {
         addbroker: function() {
           var self = this;
       
-          _contracInstance.add_broker.sendTransaction.call({from: account,gas: 4682508},function(error,value) {
+          _contracInstance.add_broker({from: account,gas: 4682508},function(error,value) {
             if (error) {
               console.log("error in addBroker method",error);
               return;
@@ -120,89 +120,6 @@ window.App = {
             }       
           })
         },
-
-        /*broker: function() {
-          var self = this;
-          $("#user_page").hide();
-          $("#broker_page").show();
-            },*/
-//       broker: function() {
-//         var self = this;
-//         _contracInstance.check_broker.sendTransaction({ from: web3.eth.accounts[0]},
-//           function (err, result){
-//             console.log(err);
-//             console.log(result);
-
-//             if (err) {
-//               console.log(err);
-//               return;
-//             }
-//             if(value==true)
-//            {
-            
-//             $("#user_page").hide();
-//             $("#broker_page").show();
-//            }
-//            else
-//            {
-//             _contracInstance.length_of_broker_addresses.sendTransaction(function(error, val){
-//               if(error){
-//                 return ;
-//               }
-//                   else if(val<5)
-//                   {
-//                     var txt;
-//                     var r = confirm("Do you want to join as a broker?");
-//                     if (r == true) {
-//                     App.addbroker();
-//                     }
-//                 }})
-//            }
-// });
-//           // var self = this;    
-//           // //console.log(value,"---");      
-//           // _contracInstance.check_broker.sendTransaction({ from: web3.eth.accounts[0]},
-//           //   function (value){
-//           //   console.log(value,"---");
-//           //  if(value==true)
-//           //  {
-            
-//           //   $("#user_page").hide();
-//           //   $("#broker_page").show();
-//           //  }
-//           //  else
-//           //  {
-           
-//           //   _contracInstance.length_of_broker_addresses.sendTransaction(function(val){
-//           //     if(val<5)
-//           //     {
-//           //       var txt;
-//           //       var r = confirm("Do you want to join as a broker?");
-//           //       if (r == true) {
-//           //       App.addbroker();
-//           //       } 
-//           //   }})
-//           //  }
-//           // })
-//           // .catch(function(e) {
-//           //   console.log(e);
-           
-//           // });
-//         },
-//         addbroker: function() {
-//           var self = this;
-      
-//           var meta;
-//           _contracInstance.add_broker.sendTransaction({from: account,gas: 6000000},
-//             function(err,result){
-//             if(result){
-//               console.log();
-//             }
-//           }).catch(function(err) {
-//             console.log(e);
-//             self.setStatus("Error getting balance; see log.");
-//           });
-//         },
 
   basicfunctions : function(){
     $("#account").val(account)
@@ -502,7 +419,7 @@ window.App = {
        for(var a=0;a<x;a++){
         _contracInstance.get_broker_address(a,
           function(val2){
-                _contracInstance.broker_created_bets.sendTransaction(val2).then(function(val,err){
+                _contracInstance.broker_created_bets.sendTransaction(val2,function(val,err){
        for(var i=val;i>=1;i--)
        {
         _contracInstance.bet_details_map.sendTransaction(val2,i,function(data,err){
