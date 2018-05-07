@@ -54,8 +54,8 @@ window.App = {
 
       accounts = accs;
       account = accounts[0];
-      // self.broker_list();
-      // self.totalbroker_list();
+      self.broker_list();
+      self.totalbroker_list();
       self.sri();
       self.basicfunctions();
       self.user_table();
@@ -110,7 +110,7 @@ window.App = {
         addbroker: function() {
           var self = this;
       
-          _contracInstance.add_broker({from: account,gas: 4682508},function(error,value) {
+          _contracInstance.add_broker.sendTransaction({from: account,gas: 4682508},function(error,value) {
             if (error) {
               console.log("error in addBroker method",error);
               return;
@@ -155,7 +155,7 @@ window.App = {
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
     $("#user_table").html('')
-     _contracInstance.get_better_betted_bets_length({from: account},
+     _contracInstance.get_better_betted_bets_length.call({from: account},
       function(error,val1) {
       if(error){
          console.log("#user_table  ",error);
@@ -165,14 +165,14 @@ window.App = {
       //for(var i=0;i<val1.toNumber();i++)
       for(var i=0;i<val1;i++)
       {
-        _contracInstance.better_betted_bets.sendTransaction(account,i,function(val2){
-          _contracInstance.bet_creator.sendTransaction(val2,function(val3){ 
-            _contracInstance.index_of_broker_bet.sendTransaction(val2,function(val4,err){
-              _contracInstance.bet_details_map.sendTransaction(val3,val4,function(data,err){
-                _contracInstance.bet_status_map.sendTransaction(data[0],function(data1,err){
-                  _contracInstance.game_id_map_better.sendTransaction(account,data[0],function(data2,err){
-                    _contracInstance.high_betters.sendTransaction(data[0],function(data3,err){
-                      _contracInstance.low_betters.sendTransaction(data[0],function(data4,err){
+        _contracInstance.better_betted_bets.call(account,i,function(val2){
+          _contracInstance.bet_creator.call(val2,function(val3){ 
+            _contracInstance.index_of_broker_bet.call(val2,function(val4,err){
+              _contracInstance.bet_details_map.call(val3,val4,function(data,err){
+                _contracInstance.bet_status_map.call(data[0],function(data1,err){
+                  _contracInstance.game_id_map_better.call(account,data[0],function(data2,err){
+                    _contracInstance.high_betters.call(data[0],function(data3,err){
+                      _contracInstance.low_betters.call(data[0],function(data4,err){
             var a=parseInt(data1[2]);
             if(data2[1]>0)
           {
@@ -408,7 +408,7 @@ window.App = {
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
     $("#broker_list").html('')
-     _contracInstance.length_of_broker_addresses(function(error,val1) {
+     _contracInstance.length_of_broker_addresses.call(function(error,val1) {
        if(error){
          console.log("#broker_list  ::",error);
          return;
@@ -417,17 +417,17 @@ window.App = {
        var x=val1;
        console.log(x,"...xxx....")
        for(var a=0;a<x;a++){
-        _contracInstance.get_broker_address(a,
+        _contracInstance.get_broker_address.call(a,
           function(val2){
-                _contracInstance.broker_created_bets.sendTransaction(val2,function(val,err){
+                _contracInstance.broker_created_bets.call(val2,function(val,err){
        for(var i=val;i>=1;i--)
        {
-        _contracInstance.bet_details_map.sendTransaction(val2,i,function(data,err){
-          _contracInstance.bet_status_map.sendTransaction(data[0],function(data1,err){
-            _contracInstance.high_betters.sendTransaction(data[0],function(data3,err){
-              _contracInstance.low_betters.sendTransaction(data[0],function(data4,err){
-                _contracInstance.game_id_map_better.sendTransaction(account,data[0],function(data2,err){
-                  _contracInstance.is_exit.sendTransaction(account,data[0],function(data5,err){
+        _contracInstance.bet_details_map.call(val2,i,function(data,err){
+          _contracInstance.bet_status_map.call(data[0],function(data1,err){
+            _contracInstance.high_betters.call(data[0],function(data3,err){
+              _contracInstance.low_betters.call(data[0],function(data4,err){
+                _contracInstance.game_id_map_better.call(account,data[0],function(data2,err){
+                  _contracInstance.is_exit.call(account,data[0],function(data5,err){
             var a=parseInt(data1[2]);
             if(data2[1]>0)
             {
@@ -847,7 +847,7 @@ window.App = {
   var date=new Date().toLocaleString();
   date = parseInt(Math.round(new Date(date))/1000.0);
       // var meta;
-      _contracInstance.balanceOf(account,{from:account,gas: 6000000 },
+      _contracInstance.balanceOf.call(account,{from:account,gas: 6000000 },
         function(error,val) {
           if(error){
             console.log("betting ::",error)
@@ -870,10 +870,7 @@ window.App = {
     }
   }
 })
-      // .catch(function(e) {
-      //   console.log(e);
-       
-      // });
+ 
     },
   //increse betting popup
   
@@ -882,7 +879,7 @@ window.App = {
   
   var betid = parseInt(passvalue);
   var incresetoken = document.getElementById('onlynum').value*0.001;
-    _contracInstance.game_id_map_better.sendTransaction(account,betid,
+    _contracInstance.game_id_map_better.call(account,betid,
       function(error,data1) {
         if(error){
           console.log("better_increase_bet_tokens  ::",error);
@@ -893,10 +890,7 @@ window.App = {
         _contracInstance.better_increase_bet_tokens.sendTransaction(betid, web3.toWei(incresetoken, 'ether'),{from:account,gas: 6000000 });
         }
     })
-    // .catch(function(e) {
-    //   console.log(e);
-     
-    // });
+    
   },
   //exit bet
   better_exit_bet : function() {
@@ -910,10 +904,7 @@ window.App = {
         }
       
     })
-    // .catch(function(e) {
-    //   console.log(e);
-     
-    // });
+    
   },
   //  purchase token
   buy_token : function() {
@@ -927,10 +918,7 @@ window.App = {
         return;
       }
     })
-    // .catch(function(e) {
-    //   console.log(e);
-     
-    // });
+    
   },
   // sell token
    exchange_token : function() {
@@ -943,10 +931,7 @@ window.App = {
         return;
       }      
     })
-    // .catch(function(e) {
-    //   console.log(e);
-     
-    // });
+   
   },
   myFunction: function(m) {
     document.getElementById("a").disabled = true;
@@ -972,7 +957,7 @@ window.App = {
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
     $("#broker_list").html('')
-     _contracInstance.broker_created_bets.sendTransaction(account,
+     _contracInstance.broker_created_bets.call(account,
       function(error,val) {
         if(error){
           console.log("#broker_list  ",error );
@@ -981,10 +966,10 @@ window.App = {
         else{
         for(var i=val;i>=1;i--)
         {
-        _contracInstance.bet_details_map.sendTransaction(account,i,function(data,err){
-          _contracInstance.bet_status_map.sendTransaction(data[0],function(data1,err){
-            _contracInstance.high_betters.sendTransaction(data[0],function(data3,err){
-              _contracInstance.low_betters.sendTransaction(data[0],function(data4,err){
+        _contracInstance.bet_details_map.call(account,i,function(data,err){
+          _contracInstance.bet_status_map.call(data[0],function(data1,err){
+            _contracInstance.high_betters.call(data[0],function(data3,err){
+              _contracInstance.low_betters.call(data[0],function(data4,err){
             var a=parseInt(data1[2]);
              if(data1[0]==true)
             {
@@ -1143,19 +1128,7 @@ window.App = {
       }
     });
   },
- /*() broker_list:function()
-{
-  
-  var self= this;
-  $("#broker_list").html('');
-  for(var i=0;i<10;i++)
-  {
-    $("#broker_list").append('<tr><td rowspan="1">'+i+'</td><td>'+i+'</td><td>'+i+'</td><td>'+i+'</td><td>'+i+'</td><td style="color:green">'+i+" &#9650;"+'</td><td style="color:red">'+i+"&#9660;"+'</td><td> <button type="button"  style="padding: 8px 60px;" data-toggle="modal" data-target="#myModal1"><center>Stop Bet</button></td><td> <button type="button"  style="padding: 8px 50px;" data-toggle="modal" data-target="#myModal2">Declare Bet</button></td></tr>');
 
-    $("#broker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>active</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');    
-  }
- 
-},*/
 sri:function()
 {
   var self= this;
@@ -1185,10 +1158,7 @@ sri:function()
           return;
         }     
     })
-    // .catch(function(e) {
-    //   console.log(e);
-    //   self.setStatus("Error getting balance; see log.");
-    // });
+   
   },
   
   declarebet: function() {
@@ -1203,10 +1173,7 @@ sri:function()
         }
      
     })
-    // .catch(function(e) {
-    //   console.log(e);
-    //   self.setStatus("Error getting balance; see log.");
-    // });
+   
   },
   create_bet: function() {
     var self = this;
@@ -1227,9 +1194,7 @@ sri:function()
           console.log("value for broker set",value)
         }
     })
-    // .catch(function(e) {
-    //   console.log(e);
-    // });
+  
   }
 };
 window.addEventListener('load', function() {
